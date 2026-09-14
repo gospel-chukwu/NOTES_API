@@ -11,5 +11,4 @@ export const registerController = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(400).json({error: error.message})
   }
-  // res.json({ message: 'User has registered' });
 };
