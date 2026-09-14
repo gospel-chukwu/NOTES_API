@@ -12,8 +12,10 @@ export const connectDB = async () => {
     return;
   }
   try {
-    console.log('Connecting to database...')
-    return await mongoose.connect(databaseUri as string);
+    console.log('Connecting to database...');
+    return await mongoose.connect(databaseUri as string, {
+      // dbName: 'notes_api'
+    });
   } catch (error) {
     console.error(error);
     process.exit(1);

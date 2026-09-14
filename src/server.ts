@@ -31,7 +31,7 @@ const startServer = async () => {
 
   // routes
   // register routes
-  app.use('/api/v1/auth', strictLimiter, authRoutes);
+  app.use('/api/auth', strictLimiter, authRoutes);
 
   // home route
   app.get('/', (req, res) => {
