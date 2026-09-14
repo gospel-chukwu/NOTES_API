@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { connectDB } from './config/db.connection.js';
+import { connectDB } from './db/db.connection.js';
 import authRoutes from './routes/auth.js';
-import { strictLimiter } from './utils/rateLimiter.js';
+import { strictLimiter } from './middleware/rateLimiter.js';
 
 // routes import
 // const authRoutes = await import('./routes/auth.js');
@@ -30,17 +30,14 @@ const startServer = async () => {
   app.use(express.urlencoded({ extended: false }));
 
   // routes
-  // register routes
-  app.use('/api/auth', strictLimiter, authRoutes);
 
   // home route
   app.get('/', (req, res) => {
     res.send('Welcome to the Notes API');
   });
 
-  app.get('/api/v1', (req, res) => {
-    res.send('Welcome to the Notes API v1');
-  });
+  // auth routes
+  app.use('/auth', strictLimiter, authRoutes);
 
   // start server
   app.listen(PORT, () => {
