@@ -1,9 +1,10 @@
-import express from 'express';
+import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { connectDB } from './db/db.connection.js';
 import authRoutes from './routes/auth.js';
-import { strictLimiter } from './middleware/rateLimiter.js';
+import notesRoutes from './routes/notes.js';
+import { apiLimiter, strictLimiter } from './middleware/rateLimiter.js';
 
 // routes import
 // const authRoutes = await import('./routes/auth.js');
@@ -17,12 +18,16 @@ const startServer = async () => {
   // check if PORT is defined
   const PORT = process.env.PORT || 4040;
 
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+
   // connect to database
   await connectDB();
   console.log('Database connected successfully.');
 
   // create express app
-  const app = express();
+  const app: Express = express();
 
   // middlewares
   app.use(cors()); // Cross-Origin-Resource-Sharing
@@ -37,7 +42,10 @@ const startServer = async () => {
   });
 
   // auth routes
-  app.use('/auth', strictLimiter, authRoutes);
+  app.use('/api/auth', strictLimiter, authRoutes);
+
+  // notes routes
+  app.use('/api/notes', apiLimiter, notesRoutes);
 
   // start server
   app.listen(PORT, () => {
